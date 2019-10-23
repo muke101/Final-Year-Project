@@ -31,24 +31,24 @@ def monteCarlo(equation, x, N):
         variance += (i-u)**2
     sigma = (variance/N)**(1/2)
     
-    print(sigma)
-
+    print(integral)
     return integral
 
 def yCoords(equation, xCoords):
     yCoords = []
     for x in xCoords:
-        yCoords.append(monteCarlo(equation, x, 10000))
+        yCoords.append(monteCarlo(equation, 0.8, 10000))
 
     return yCoords
 
 def plotCoords(x1, x2, n, equations):
     xCoords = np.linspace(x1, x2, n)
+    print(xCoords)
 
     for eq in equations:
         plt.plot(xCoords, yCoords(eq, xCoords))
 
-    plt.show()
+    #plt.show()
 
 plotCoords(0, 2, 20, [nfEquation])
 
