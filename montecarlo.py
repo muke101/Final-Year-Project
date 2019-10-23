@@ -13,12 +13,27 @@ def nfEquation(x, k, z, phi):
 def monteCarlo(equation, x, N):
     I = 0
     V = np.pi**2
+    c = 0
+    results = np.empty(N-1)
     for i in range(1,N):
         phi = random.uniform(0, 2*np.pi)
         z = random.uniform(0,1)
         k = random.uniform(0,np.pi/2)
-        I += equation(x, k, z, phi)
-    return (V*I)/N
+        results[c] = equation(x, k, z, phi)
+        I += results[c]
+        c += 1
+    
+    integral = (V*I)/N
+    u = np.mean(results)
+    
+    variance = 0
+    for i in results:
+        variance += (i-u)**2
+    sigma = (variance/N)**(1/2)
+    
+    print(sigma)
+
+    return integral
 
 def yCoords(equation, xCoords):
     yCoords = []
