@@ -1,0 +1,1 @@
+gcc -shared -lm -O2 -march=native -fPIC montecarlo.c -o montecarlo.so
