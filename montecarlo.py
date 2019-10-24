@@ -9,6 +9,7 @@ def nfEquation(x, k, z, phi):
     fc = z*(1+2*((1-z)/z)**(1/2)*np.tan(k)*np.cos(phi)+np.tan(k)**2*(1-z)/z)**(1-x/2)+(1-z)*(1-2*(z/(1-z))**(1/2)*np.tan(k)*np.cos(phi)+(z*np.tan(k)**2)/(1-z))**(1-x/2) 
     Hq = 1-((z*(1-z))/(1+np.tan(k)**2))*(2*np.cos(phi)+(np.tan(k)*(1-2*z))/((z*(1-z))**(1/2)))**2
     return (np.log(fc)*Hq)/(4*np.pi)
+    return (np.log(fc)*Hq)/(4*np.pi)
 
 def monteCarlo(equation, x, N):
     I = 0
@@ -20,6 +21,7 @@ def monteCarlo(equation, x, N):
         z = random.uniform(0,1)
         k = random.uniform(0,np.pi/2)
         results[c] = equation(x, k, z, phi)
+        print(I)
         I += results[c]
         c += 1
     
@@ -31,7 +33,6 @@ def monteCarlo(equation, x, N):
         variance += (i-u)**2
     sigma = (variance/N)**(1/2)
     
-    print(integral)
     return integral
 
 def yCoords(equation, xCoords):
@@ -43,14 +44,14 @@ def yCoords(equation, xCoords):
 
 def plotCoords(x1, x2, n, equations):
     xCoords = np.linspace(x1, x2, n)
-    print(xCoords)
 
     for eq in equations:
         plt.plot(xCoords, yCoords(eq, xCoords))
 
     #plt.show()
 
-plotCoords(0, 2, 20, [nfEquation])
+#plotCoords(0, 2, 20, [nfEquation])
+print(nfEquation(0.8, np.pi/4, 0.5, np.pi))
 
 
 

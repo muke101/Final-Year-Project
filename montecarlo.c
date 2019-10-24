@@ -6,7 +6,7 @@
 double nfEquation(double x, double k, double z, double phi)	{
 	double fc = z*pow(1+2*pow((1-z)/z,0.5)*tan(k)*cos(phi)+pow(tan(k),2)*((1-z)/z),(1-x/2))+(1-z)*pow(1-2*pow(z/(1-z),0.5)*tan(k)*cos(phi)+(z*pow(tan(k),2)/(1-z)), (1-x/2));
 	double Hq = 1-((z*(1-z))/(1+pow(tan(k),2)))*pow(2*cos(phi)+tan(k)*(1-2*z)/pow(z*(1-z),0.5), 2);
-	return (log(fc)*Hq)/4*M_PI;
+	return (log(fc)*Hq)/(4*M_PI);
 }
 
 double uniform(double a, double b)	{
@@ -32,7 +32,7 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 	double results[N-1];
 	double phi, k, z;	
 
-	srand(time(NULL)); //seed RNG
+	srand(time(0)); //seed RNG
 
 	for (i=0; i < N; ++i)	{
 		phi = uniform(0, 2*M_PI);
@@ -41,6 +41,7 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 		results[i] = equation(x, k, z, phi);
 		I += results[i];
 	}
+
 
 	double integral = (V*I)/N;
 	double u = mean(results, N);
@@ -51,6 +52,8 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 	}
 	
 	double sigma = pow(variance/N, 0.5);
+
+	printf("%f\n", sigma);
 
 	return integral;
 }
