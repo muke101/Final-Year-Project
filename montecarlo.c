@@ -25,7 +25,7 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 	for (i=0; i < N; ++i)	{
 		phi = uniform(0, 2*M_PI);
 		z = uniform(0, 1);
-		while ((k=uniform(0, M_PI/2)) != M_PI/2)
+		while ((k=uniform(0, M_PI/2)) == M_PI/2)
 			k = uniform(0, M_PI/2);
 		I += equation(x, k, z, phi);
 	}
