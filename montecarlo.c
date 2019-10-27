@@ -33,6 +33,12 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 	return (V*I)/N;
 }
 
+/* generate all variables between 0 and 1 then transform for substituion equation
+ * make sure to check against x=0 analyic result (pi^2/18)
+ * remember epislon = 0
+ * split up 2S in partial fractions then add coeffs with Hg
+ */
+
 int main()	{
 	return 0;
 }
