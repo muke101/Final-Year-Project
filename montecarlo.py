@@ -7,19 +7,14 @@ def yCoords(equation, xCoords, N):
     yCoords = np.empty(len(xCoords))
 
     N = ctypes.c_ulonglong(N)
-    output.write("c x\n")
-
+    
     for c, x in enumerate(xCoords):
         x = ctypes.c_double(x)
         yCoords[c] = mc.monteCarlo(equation, x, N)
-        output.write(str(c+1)+", "+str(x)+": "+str(yCoords[c]))
+        stddev = mc.returnStddev()
+        output.write(str(c+1)+", y: "+str(x).split("(")[1][:-1]+", x: "+str(yCoords[c])+", stddev: "+str(stddev))
         output.write('\n')
         print(c+1)
-
-    sigma = np.std(yCoords) 
-
-    output.write("std: "+str(sigma))
-    output.write('\n')
 
     return yCoords
 
@@ -35,11 +30,7 @@ if __name__ == '__main__':
     ctypes.cdll.LoadLibrary("./montecarlo.so")
     mc = ctypes.CDLL("./montecarlo.so")
     mc.monteCarlo.restype = ctypes.c_double
+    mc.returnStddev.restype = ctypes.c_double
     output = open('results', 'w')
-    plotCoords(0, 2, 20, 1000000, [mc.nfEquation])
+    plotCoords(0, 2, 50, 1000000000, [mc.nfEquation])
     output.close()
-
-
-
-
-

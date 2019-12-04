@@ -3,43 +3,16 @@
 #include <stdlib.h>
 #include <time.h>
 
-struct integralResults	{
-	double I;
-	double sigma;
-};
-
 double uniform(double a, double b)	{
 	double range = b-a;
 	return a + (rand()*range)/RAND_MAX;
 }
 
-double mean(double *arr, unsigned long long len)	{
-	unsigned long long i;
-	double mean;
-
-	for (i=0; i < len; i++)	{
-		mean+=arr[i];
-	}
-
-	return mean/len;
-}
-
-double stddev(double *arr, double mu, unsigned long long len)	{
-	unsigned long long i;
-	double stddev;
-
-	for (i=0; i < len; i++)	{
-		stddev+=pow(arr[i]-mu,2);
-	}
-
-	return pow(stddev/len, 0.5);
-}
-
 double nfEquation(double x, double k, double z, double phi_k)	{
 
-	if (k == 1) return 0;
+	if (k == 1 || k == 0)	return 0;
 	double u2 = k/(1-k);
-	double u = pow(u2,0.5);
+	double u = pow(u2, 0.5);
 	double phi = phi_k*2*M_PI;
 
 	double fc = z*pow(1+2*pow((1-z)/z,0.5)*u*cos(phi)+((1-z)/z)*u2, 1-x/2)+(1-z)*pow(1-2*pow(z/(1-z),0.5)*u*cos(phi)+(z/(1-z))*u2, 1-x/2); 
@@ -48,25 +21,33 @@ double nfEquation(double x, double k, double z, double phi_k)	{
 	return (1/(2*k))*Hq*log(fc);
 }
 
+double stddev;
+
 double monteCarlo(double (*equation)(double, double, double, double), double x, unsigned long long N)	{
 
-	double I = 0;
+	double r, I = 0, I2 = 0;
 	unsigned long long i;
-	double phi_k, k, z, result;	
-
-	struct integralResults intRes;
+	double phi_k, k, z;
 
 	srand(time(0)); //seed RNG
 
 	for (i=0; i < N; ++i)	{
-		phi_k = uniform(0,1);
-		z = uniform(0,1);
-		k = uniform(0,1);
-		result = equation(x,k,z,phi_k);
-		I += result;
+		phi_k = uniform(0, 1);
+		z = uniform(0, 1);
+		k = uniform(0, 1);
+		r = equation(x, k, z, phi_k);
+		I+=r;
+		I2+=pow(r,2);
 	}
 
-	return I/N;
+	double mu = I/N;
+	stddev = pow((I2-2*mu*I+N*pow(mu,2))/N, 0.5);
+
+	return mu; //not *actually* returning mu but works out to be the same computation so saving cycles 
+}
+
+double returnStddev()	{
+	return stddev;
 }
 
 /* generate all variables between 0 and 1 then transform for substituion equation
