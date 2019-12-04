@@ -10,21 +10,21 @@ double uniform(double a, double b)	{
 
 double nfEquation(double x, double k, double z, double phi_k)	{
 
-	while (k == 1)
-		k = uniform(0, 1);
-	double u = pow(k/(1-k), 0.5);
-	double u2 = pow(u,2);
+	if (k == 1 || k == 0)	return 0;
+	double u2 = k/(1-k);
+	double u = pow(u2, 0.5);
 	double phi = phi_k*2*M_PI;
 
 	double fc = z*pow(1+2*pow((1-z)/z,0.5)*u*cos(phi)+((1-z)/z)*u2, 1-x/2)+(1-z)*pow(1-2*pow(z/(1-z),0.5)*u*cos(phi)+(z/(1-z))*u2, 1-x/2); 
 	double Hq = 1-((z*(1-z))/(1+u2))*pow(2*cos(phi)+(1-2*z)*u/pow(z*(1-z),0.5),2);
 
-	return (1/(u2*(1+u2)))*(1/(4*M_PI))*Hq*log(fc);
+	return (1/(2*k))*Hq*log(fc);
 }
 
+double stddev;
+
 double monteCarlo(double (*equation)(double, double, double, double), double x, unsigned long long N)	{
-	double I = 0;
-	double V = pow(M_PI, 2);
+	double r, I = 0, I2 = 0;
 	unsigned long long i;
 	double phi_k, k, z;	
 
@@ -34,10 +34,19 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 		phi_k = uniform(0, 1);
 		z = uniform(0, 1);
 		k = uniform(0, 1);
-		I += equation(x, k, z, phi_k);
+		r = equation(x, k, z, phi_k);
+		I+=r;
+		I2+=pow(r,2);
 	}
 
-	return (V*I)/N;
+	double mu = I/N;
+	stddev = pow((I2-2*mu*I+N*pow(mu,2))/N, 0.5);
+
+	return mu; //not *actually* returning mu but works out to be the same computation so saving cycles 
+}
+
+double returnStddev()	{
+	return stddev;
 }
 
 /* generate all variables between 0 and 1 then transform for substituion equation
