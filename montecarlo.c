@@ -8,6 +8,14 @@ double uniform(double a, double b)	{
 	return a + (rand()*range)/RAND_MAX;
 }
 
+double ua2(double z, double phi, double u, double u2)	{
+	return 1+2*pow((1-z)/z,0.5)*u*cos(phi)+(1-z)/z*u2; 
+}	
+
+double ub2(double z, double phi, double u, double u2)	{
+	return 1-2*pow(z/(1-z),0.5)*u*cos(phi)+1/(1-z)*u2;  
+}	
+
 double nfEquation(double x, double k, double z, double phi_k)	{
 
 	if (k == 1 || k == 0)	return 0;
@@ -15,10 +23,28 @@ double nfEquation(double x, double k, double z, double phi_k)	{
 	double u = pow(u2, 0.5);
 	double phi = phi_k*2*M_PI;
 
-	double fc = z*pow(1+2*pow((1-z)/z,0.5)*u*cos(phi)+((1-z)/z)*u2, 1-x/2)+(1-z)*pow(1-2*pow(z/(1-z),0.5)*u*cos(phi)+(z/(1-z))*u2, 1-x/2); 
+	double fc = z*pow(ua2(z,phi,u,u2),1-x/2)+(1-z)*pow(ub2(z,phi,u,u2),1-x/2);
 	double Hq = 1-((z*(1-z))/(1+u2))*pow(2*cos(phi)+((1-2*z)*u)/pow(z*(1-z),0.5),2);
 
 	return (1/(2*k))*Hq*log(fc);
+}
+
+double caEquation(double x, double k, double z, double phi_k)	{
+
+	if (k == 1)	return 0;
+	double u2 = k/(1-k);
+	double u = pow(u2, 0.5);
+	double phi = phi_k*2*M_PI;
+	double z = t;
+	double z1 = pow(z,2)+1; 
+	double z2 = pow(z,2);
+
+	double fc = z*pow(ua2(z,phi,u,u2),1-x/2)+(1-z)*pow(ub2(z,phi,u,u2),1-x/2);
+	double Hg1 = -4+z*(1-z)/(1+u2)*pow(2*cos(phi)+(1-2*z)*u/pow(z*(1-z),0.5),2); 
+	double zCompOne = 1/(1-z1)*(1/2+1/2*(1-(1-z1)*u2/z1)/ua2(z1,phi,u,u2)+(1-2*u2/(1-z1)/ub2(z1,phi,u,u2));
+	double zCompTwo = 1/z2*(1/2+1/2*(1-2*u2/(1-z))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
+
+	return 2/k*pow(z,0.5),pow(z-1,0.5)*(Hg1+zCompOne+zCompTwo)*log(fc);
 }
 
 double stddev;
@@ -50,14 +76,9 @@ double returnStddev()	{
 	return stddev;
 }
 
-/* generate all variables between 0 and 1 then transform for substituion equation
- * make sure to check against x=0 analyic result (pi^2/18)
- * remember epislon = 0
- * split up 2S in partial fractions then add coeffs with Hg
- * when changing variables, don't need to change the function itself but do need to do the limits and jabobian. You just transform the variables and plug into function. change jacobian to account for d's (measure)
+ /* when changing variables, don't need to change the function itself but do need to do the limits and jabobian. You just transform the variables and plug into function. change jacobian to account for d's (measure)
  */
 
 int main()	{
-	printf("%f\n",monteCarlo(nfEquation, 0, 10000));
 	return 0;
 }
