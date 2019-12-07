@@ -13,15 +13,16 @@ double ua2(double z, double phi, double u, double u2)	{
 }	
 
 double ub2(double z, double phi, double u, double u2)	{
-	return 1-2*pow(z/(1-z),0.5)*u*cos(phi)+1/(1-z)*u2;  
+	return 1-2*pow(z/(1-z),0.5)*u*cos(phi)+z/(1-z)*u2;  
 }	
 
-double nfEquation(double x, double k, double z, double phi_k)	{
+double nfEquation(double x, double k, double t, double phi_k)	{
 
 	if (k == 1 || k == 0)	return 0;
 	double u2 = k/(1-k);
 	double u = pow(u2, 0.5);
 	double phi = phi_k*2*M_PI;
+	double z = t;
 
 	double fc = z*pow(ua2(z,phi,u,u2),1-x/2)+(1-z)*pow(ub2(z,phi,u,u2),1-x/2);
 	double Hq = 1-((z*(1-z))/(1+u2))*pow(2*cos(phi)+((1-2*z)*u)/pow(z*(1-z),0.5),2);
@@ -29,22 +30,22 @@ double nfEquation(double x, double k, double z, double phi_k)	{
 	return (1/(2*k))*Hq*log(fc);
 }
 
-double caEquation(double x, double k, double z, double phi_k)	{
+double caEquation(double x, double k, double t, double phi_k)	{
 
-	if (k == 1)	return 0;
+	if (k == 1 || k == 0 || t == 0 || t == 1)	return 0;
 	double u2 = k/(1-k);
 	double u = pow(u2, 0.5);
 	double phi = phi_k*2*M_PI;
 	double z = t;
-	double z1 = pow(z,2)+1; 
-	double z2 = pow(z,2);
+	double z1 = 1-pow(t,2);
+	double z2 = pow(t,2);
 
 	double fc = z*pow(ua2(z,phi,u,u2),1-x/2)+(1-z)*pow(ub2(z,phi,u,u2),1-x/2);
-	double Hg1 = -4+z*(1-z)/(1+u2)*pow(2*cos(phi)+(1-2*z)*u/pow(z*(1-z),0.5),2); 
-	double zCompOne = 1/(1-z1)*(1/2+1/2*(1-(1-z1)*u2/z1)/ua2(z1,phi,u,u2)+(1-2*u2/(1-z1)/ub2(z1,phi,u,u2));
-	double zCompTwo = 1/z2*(1/2+1/2*(1-2*u2/(1-z))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
+	double Hg1 = -4+z*(1-z)/(1+u2)*pow(2*cos(phi)+((1-2*z)*u)/pow(z*(1-z),0.5),2); 
+	double zCompOne = 1/(1-z1)*(1/2+1/2*(1-(1-z1)*u2/z1)/ua2(z1,phi,u,u2)+(1-z1*u2/(1-z1))/ub2(z1,phi,u,u2));
+	double zCompTwo = 1/z2*(1/2+1/2*(1-z2*u2/(1-z2))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
 
-	return 2/k*pow(z,0.5),pow(z-1,0.5)*(Hg1+zCompOne+zCompTwo)*log(fc);
+	return (1/(2*k))*(Hg1-(2*t*zCompOne)+(2*t*zCompTwo))*log(fc);
 }
 
 double stddev;
@@ -53,15 +54,15 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 
 	double r, I = 0, I2 = 0;
 	unsigned long long i;
-	double phi_k, k, z;
+	double phi_k, k, t;
 
 	srand(time(0)); //seed RNG
 
 	for (i=0; i < N; ++i)	{
 		phi_k = uniform(0, 1);
-		z = uniform(0, 1);
+		t = uniform(0, 1);
 		k = uniform(0, 1);
-		r = equation(x, k, z, phi_k);
+		r = equation(x, k, t, phi_k);
 		I+=r;
 		I2+=pow(r,2);
 	}
@@ -69,16 +70,14 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 	double mu = I/N;
 	stddev = pow((I2-2*mu*I+N*pow(mu,2))/N, 0.5);
 
-	return mu; //not *actually* returning mu but works out to be the same computation so saving cycles 
+	return I/N;
 }
 
 double returnStddev()	{
 	return stddev;
 }
 
- /* when changing variables, don't need to change the function itself but do need to do the limits and jabobian. You just transform the variables and plug into function. change jacobian to account for d's (measure)
- */
-
 int main()	{
+	printf("%f\n", monteCarlo(caEquation, 0, 10000));
 	return 0;
 }
