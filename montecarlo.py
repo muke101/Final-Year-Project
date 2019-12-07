@@ -32,5 +32,5 @@ if __name__ == '__main__':
     mc.monteCarlo.restype = ctypes.c_double
     mc.returnStddev.restype = ctypes.c_double
     output = open('results', 'w')
-    plotCoords(0, 2, 20, 100000, [mc.nfEquation, mc.caEquation])
+    plotCoords(0, 2, 20, 1000000, [mc.nfEquation, mc.caEquation])
     output.close()

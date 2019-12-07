@@ -78,6 +78,5 @@ double returnStddev()	{
 }
 
 int main()	{
-	printf("%f\n", monteCarlo(caEquation, 0, 10000));
 	return 0;
 }
