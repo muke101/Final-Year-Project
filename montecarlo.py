@@ -12,7 +12,7 @@ def yCoords(equation, xCoords, N):
         x = ctypes.c_double(x)
         yCoords[c] = mc.monteCarlo(equation, x, N)
         stddev = mc.returnStddev()
-        output.write(str(c+1)+", y: "+str(x).split("(")[1][:-1]+", x: "+str(yCoords[c])+", stddev: "+str(stddev))
+        output.write(str(c+1)+", x: "+str(x).split("(")[1][:-1]+", y: "+str(yCoords[c])+", stddev: "+str(stddev))
         output.write('\n')
         print(c+1)
 
@@ -32,5 +32,5 @@ if __name__ == '__main__':
     mc.monteCarlo.restype = ctypes.c_double
     mc.returnStddev.restype = ctypes.c_double
     output = open('results', 'w')
-    plotCoords(0, 2, 20, 1000000, [mc.nfEquation, mc.caEquation])
+    plotCoords(0, 2, 20, 100000, [mc.nfEquation, mc.caEquation])
     output.close()
