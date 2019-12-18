@@ -35,7 +35,7 @@ double caEquation(double x, double k, double t, double phi_k)	{
 	if (k == 1 || k == 0 || t == 0 || t == 1)	return 0;
 	double u2 = k/(1-k);
 	double u = pow(u2, 0.5);
-	double phi = phi_k*2*M_PI;
+	double phi = phi_k*2.*M_PI;
 	double z = t;
 	double z1 = 1-pow(t,2);
 	double z2 = pow(t,2);
@@ -43,13 +43,11 @@ double caEquation(double x, double k, double t, double phi_k)	{
 	double fc = z*pow(ua2(z,phi,u,u2),1-x/2.)+(1-z)*pow(ub2(z,phi,u,u2),1-x/2.);
 	double fc1 = z1*pow(ua2(z1,phi,u,u2),1-x/2.)+(1-z1)*pow(ub2(z1,phi,u,u2),1-x/2.);
 	double fc2 = z2*pow(ua2(z2,phi,u,u2),1-x/2.)+(1-z2)*pow(ub2(z2,phi,u,u2),1-x/2.);
-	double Hg = -4+z*(1-z)/(1+u2)*pow(2*cos(phi)+((1-2*z)*u)/pow(z*(1-z),0.5),2);  
-	double Hg1 = -4+z1*(1-z1)/(1+u2)*pow(2*cos(phi)+((1-2*z1)*u)/pow(z1*(1-z1),0.5),2); 
-	double Hg2 = -4+z2*(1-z2)/(1+u2)*pow(2*cos(phi)+((1-2*z2)*u)/pow(z2*(1-z2),0.5),2); 
-	double zCompOne = (1./(1-z1))*(1./2+1./2*(1-(1-z1)*u2/z1)/ua2(z1,phi,u,u2)+(1-z1*u2/(1-z1))/ub2(z1,phi,u,u2));
-	double zCompTwo = (1./z2)*(1./2+1./2*(1-z2*u2/(1-z2))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
+	double Hg = -4+z*(1-z)/(1+u2)*pow(2.*cos(phi)+((1-2.*z)*u)/pow(z*(1-z),0.5),2);  
+	double zCompOne = (1./(1-z1))*(1./2.+1./2.*(1-(1-z1)*u2/z1)/ua2(z1,phi,u,u2)+(1-z1*u2/(1-z1))/ub2(z1,phi,u,u2));
+	double zCompTwo = (1./z2)*(1./2.+1./2.*(1-z2*u2/(1-z2))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
 
-	return (1./(2*k))*(Hg*log(fc)+zCompOne*2*t*log(fc1)+zCompTwo*2*t*log(fc2));
+	return (1./(2.*k))*(Hg*log(fc)+zCompOne*2.*t*log(fc1)+zCompTwo*2.*t*log(fc2));
 }
 
 double stddev;
@@ -66,7 +64,11 @@ double monteCarlo(double (*equation)(double, double, double, double), double x, 
 		phi_k = uniform(0, 1);
 		t = uniform(0, 1);
 		k = uniform(0, 1);
-		r = equation(x, k, t, phi_k);
+		while (isnan(r = equation(x, k, t, phi_k)))	{
+			phi_k = uniform(0, 1);
+			t = uniform(0, 1);
+			k = uniform(0, 1);
+		}
 		I+=r;
 		I2+=pow(r,2);
 	}
