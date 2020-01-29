@@ -27,15 +27,15 @@ unsigned fact(unsigned n, unsigned t)	{
 	return fact(n-1,t*n);	
 }
 
-unsigned n = 0; //defining total iZeta calls globally so function can be tail call optimized
-
-void iZeta(double zetaPrev, double epsi, double R, double *res)	{
+unsigned iZeta(double zetaPrev, double epsi, double R, double *res, unsigned n)	{
 	double zeta = zetaPrev*pow(uniform(epsi,1),1./R);	
 	if (zeta > epsi)	{
 		res[0] *= 1./zeta; //this quickly sky rockets to infinity
 		res[1] += zeta;
-		n+=1;
-		iZeta(zeta, epsi, R, res);	
+		return iZeta(zeta, epsi, R, res, n+1);	
+	}
+	else	{
+		return n;
 	}
 }
 
@@ -43,14 +43,14 @@ double monteCarlo(double epsi, double R, unsigned long long N)	{
 	double currentProductSum, r, I = 0, I2 = 0;
 	double res[2];
 	unsigned long long i;
+	unsigned n;
 	srand(time(0)); //seed RNG
 
 	res[0] = 1; //holds product sum of 1/zeta_i
 	for (i=0; i < N; ++i)	{
 		currentProductSum = res[0];
 		res[1] = 0; //holds sum of zeta_i
-		n = 0;
-		iZeta(1, epsi, R, res);
+		n = iZeta(1, epsi, R, res, 0);
 		if (res[1] < 1 && n > 0)	{
 			r = pow(R,n)*res[0]*(1-res[1]/N)/fact(n,1);
 			I+=r;
