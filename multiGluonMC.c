@@ -4,15 +4,13 @@
 #include <time.h>
 
 double *arange(double a, double b, size_t x)	{
-	double *arr = malloc(x);	
+	double *arr = malloc(x*sizeof(double));	
 	double step = (b-a)/x;
 	int i;
 	
-	for (i=0; i < x; i++)	{
-		printf("%d\n",i);
+	for (i=0; i <= x; i++)	{
 		arr[i] = a+step*i;
 	}
-	arr[i] = b;
 
 	return arr;
 }
@@ -42,27 +40,28 @@ void iZeta(double zetaPrev, double epsi, double R, double *res)	{
 }
 
 double monteCarlo(double epsi, double R, unsigned long long N)	{
-	double I = 0, I2 = 0;
+	double currentProductSum, r, I = 0, I2 = 0;
 	double res[2];
 	unsigned long long i;
 	srand(time(0)); //seed RNG
 
 	res[0] = 1; //holds product sum of 1/zeta_i
 	for (i=0; i < N; ++i)	{
-		double currentProductSum = res[0];
+		currentProductSum = res[0];
 		res[1] = 0; //holds sum of zeta_i
+		n = 0;
 		iZeta(1, epsi, R, res);
-		if (res[1] < 1)	{
-			I+=res[1];
-			//I2+=
+		if (res[1] < 1 && n > 0)	{
+			r = pow(R,n)*res[0]*(1-res[1]/N)/fact(n,1);
+			I+=r;
+			I2+=pow(r,2);
 		}
 		else	{
 			res[0] = currentProductSum; //undo invalidated changes to product sum
 		}
 	}
 
-	I*=res[0]*pow(epsi,R)*pow(R,n)/(N*fact(n,1));
-	return I;
+	return pow(epsi,R)*I;
 }
 
 int main(int argc, char **argv)	{
@@ -72,7 +71,7 @@ int main(int argc, char **argv)	{
 	double epsi = 10e-3;
 	double *R = arange(0.1,2,x);
 	
-	for(i=0; i < x+1; i++)	{
+	for(i=0; i <= x; i++)	{
 		printf("%f\n",monteCarlo(epsi, R[i], N));	
 	}
 
