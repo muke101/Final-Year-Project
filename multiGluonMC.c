@@ -32,9 +32,9 @@ unsigned fact(unsigned n, unsigned t)	{
 unsigned n = 0; //defining total iZeta calls globally so function can be tail call optimized
 
 void iZeta(double zetaPrev, double epsi, double R, double *res)	{
-	double zeta = zetaPrev*pow(uniform(epsi,1),1/R);	
+	double zeta = zetaPrev*pow(uniform(epsi,1),1./R);	
 	if (zeta > epsi)	{
-		res[0] *= 1./zeta;
+		res[0] *= 1./zeta; //this quickly sky rockets to infinity
 		res[1] += zeta;
 		n+=1;
 		iZeta(zeta, epsi, R, res);	
