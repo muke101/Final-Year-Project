@@ -1,1 +1,1 @@
-gcc -shared -lm -O3 -march=native -flto=10 -fprofile-use=profile/ -fPIC nfcaMC.c -o nfcaMC.so
+gcc -shared -lm -O3 -march=native -flto=10 -fprofile-use=profile/ -floop-block -floop-interchange -floop-strip-mine -floop-nest-optimize -fgraphite-identity -fipa-pta -fdevirtualize-at-ltrans -fPIC nfcaMC.c -o nfcaMC.so
