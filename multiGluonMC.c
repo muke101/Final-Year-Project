@@ -43,10 +43,8 @@ double monteCarlo(double epsi, double R, unsigned long long N)	{
 	for (i=0; i < N; ++i)	{
 		res = 0; //holds sum of zeta_i
 		n = iZeta(1, epsi, R, &res, 0);
-		if (res < 1 && n > 0)	{
-			I+=1./N;
-			I2+=1./N;
-		}
+		I+=pow(1+res, -R)/N;
+		I2+=pow(1+res, -2*R)/N;
 	}
 
 	double mu = I/N;
@@ -59,7 +57,7 @@ int main(int argc, char **argv)	{
 	int i;
 	size_t x = 20;
 	unsigned long long N = 1000000;
-	double epsi = 1e-40;
+	double epsi = 1e-5;
 	double *R = arange(0.1,2,x);
 	
 	for(i=0; i <= x; i++)	{
