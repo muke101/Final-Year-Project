@@ -1,2 +1,0 @@
-gcc -shared -lm -O3 -march=native -flto=10 -fprofile-use=profile/ -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block -fPIC nfcaMC.c -ftree-vectorize -o nfcaMC.so
-
