@@ -24,10 +24,10 @@ double nfEquation(double x, double k, double t, double phi_k)	{
 	double phi = phi_k*2*M_PI;
 	double z = t;
 
-	double fc = z*pow(ua2(z,phi,u,u2),1-x/2)+(1-z)*pow(ub2(z,phi,u,u2),1-x/2);
-	double Hq = 1-((z*(1-z))/(1+u2))*pow(2*cos(phi)+((1-2*z)*u)/pow(z*(1-z),0.5),2);
+	double fc = z*pow(ua2(z,phi,u,u2),1-x/2.)+(1-z)*pow(ub2(z,phi,u,u2),1-x/2);
+	double Hq = 1-((z*(1-z))/(1+u2))*pow(2*cos(phi)+((1-2.*z)*u)/pow(z*(1-z),0.5),2);
 
-	return (1./(2*k))*Hq*log(fc);
+	return (1./(2.*k))*Hq*log(fc);
 }
 
 double caEquation(double x, double k, double t, double phi_k)	{
