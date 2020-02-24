@@ -5,3 +5,8 @@ Currently, an arbitrary number of gluons can be calculated as well as their most
 To build each script with the appropiate optimizations, run `make <script name>`
 Each script will write it's results to a file which can be read by `parseResults.py <file name>` in order to be plotted on a graph in matplotlib
 
+Equations and methods based off the following papers:
+https://arxiv.org/pdf/1412.2126.pdf
+https://arxiv.org/pdf/1807.11487.pdf
+
+Project supervised by Andrea Banfi
