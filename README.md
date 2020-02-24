@@ -1,10 +1,7 @@
-These are the scripts for the calculations required for my final year project. Currently the project is still getting off the ground so there isn't a massive amount to talk about, but hopefully soon it should have some interesting scripts to do with calculating particle collisions, and possible even prototypes for contributions to the ARES project that CERN use for particle collision data processing.
+This project is reimplementing various monte carlo integrations that calculate the Jet distributions of particle collisions. The reimplementation aims to address integrable singularities contained in the equations being evaluated as to reduce error in the results, as well as eventually add basic multi-threading support and a higher level of compiler optimization, which the standard implementation found in the ARES framework does not do. Once this has been achieved, this code will be integrated into the ARES framework to be made avalible to any particle physics researches who need it. 
 
-To run, compile the C script as a shared library. This can be done with a simple execution of
-`bash gcc`
+Currently, an arbitrary number of gluons can be calculated as well as their most significant correction, which have been combined into a total monte carlo integration for calculating any addative observable. The script will soon add all required corrections for the relevant collision, which after having corrected for Fcorrel should be trivial. After this the script will also be extended to non-addative observables.
 
-From there you can run the python script directly which will write results to the `results` file and generate a graph at the end of computation. 
+To build each script with the appropiate optimizations, run `make <script name>`
+Each script will write it's results to a file which can be read by `parseResults.py <file name>` in order to be plotted on a graph in matplotlib
 
-For now this contains a basic monte carlo integration script for numerically evaluating integrals from this paper: https://arxiv.org/pdf/1807.11487.pdf
-
-The script depends on numpy and matplotlib.
