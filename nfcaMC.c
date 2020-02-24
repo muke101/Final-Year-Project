@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-double uniform(double a, double b)	{
+double static uniform(double a, double b)	{
 	double range = b-a;
 	return a + (rand()*range)/RAND_MAX;
 }
@@ -51,7 +51,7 @@ double caEquation(double x, double k, double t, double phi_k)	{
 
 double stddev;
 
-double monteCarlo(double (*equation)(double, double, double, double), double x, unsigned long long N)	{
+double fcorrelMC(double (*equation)(double, double, double, double), double x, unsigned long long N)	{
 
 	double r, I = 0, I2 = 0;
 	unsigned long long i;
@@ -81,6 +81,6 @@ double returnStddev()	{
 	return stddev;
 }
 
-int main()	{
-	return 0;
-}
+//int main()	{
+//	return 0;
+//}
