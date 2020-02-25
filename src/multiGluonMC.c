@@ -6,7 +6,7 @@
 double *arange(double a, double b, size_t x)	{
 	double *arr = malloc(x*sizeof(double));	
 	double step = (b-a)/x;
-	int i;
+	size_t i;
 	
 	for (i=0; i <= x; i++)	{
 		arr[i] = a+step*i;
@@ -15,42 +15,35 @@ double *arange(double a, double b, size_t x)	{
 	return arr;
 }
 
-double static uniform(double a, double b)  {
+static double uniform(double a, double b)  {
    double range = b-a;
    return a + (rand()*range)/RAND_MAX;
 }
 
-unsigned iZeta(double zetaPrev, double epsi, double R, double *res, unsigned n)	{
+double iZeta(double zetaPrev, double epsi, double R, double zetaSum)	{
 	double zeta = zetaPrev*pow(uniform(0,1),1./R);	
-	if (n > epsi)	{
-		*res += zeta;
-		return iZeta(zeta, epsi, R, res, n+1);	
+	if (zeta > epsi)	{ //TODO: this was n > epsi for some reason? double check this is ok
+		return iZeta(zeta, epsi, R, zetaSum+zeta);	
 	}
 	else	{
-		return n;
+		return zetaSum;
 	}
 }
 
-double stddev;
-
-double multiGluonMC(double epsi, double R, unsigned long long N)	{
-	double currentProductSum, r, I = 0, I2 = 0;
-	double res;
+void multiGluonMC(double epsi, double R, unsigned long long N, double *I, double *stddev)	{
+	*I = 0;
+	double currentProductSum, r, I2 = 0;
 	unsigned long long i;
 	unsigned n;
 	srand(time(0)); //seed RNG
 
 	for (i=0; i < N; ++i)	{
-		res = 0; //holds sum of zeta_i
-		n = iZeta(1, epsi, R, &res, 0);
-		I+=pow(1+res, -R)/N;
-		I2+=pow(1+res, -2.*R)/N;
+		r = iZeta(1, epsi, R, 0);
+		*I+=pow(1+r, -R)/N;
+		I2+=pow(1+r, -2.*R)/N;
 	}
 
-	double mu = I/N;
-	stddev = pow((1./N)*(I2-pow(I,2)), 0.5);
-
-	return I;
+	*stddev = pow((1./N)*(I2-pow(*I,2)), 0.5);
 }
 
 //int main(int argc, char **argv)	{
