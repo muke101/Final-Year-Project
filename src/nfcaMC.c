@@ -30,7 +30,7 @@ double nfEquation(double x, double k, double t, double phi_k)	{
 
 	double Hq = 1-((z*(1-z))/(1+u2))*pow(2.*cos(phi)+((1-2.*z)*u)/pow(z*(1-z),0.5),2);
 
-	return (1./(2.*k))*Hq*log(fc(x,phi,u,u2,x));
+	return (1./(2.*k))*Hq*log(fc(z,phi,u,u2,x));
 }
 
 double caEquation(double x, double k, double t, double phi_k)	{
@@ -47,6 +47,7 @@ double caEquation(double x, double k, double t, double phi_k)	{
 	double zCompTwo = (1./z2)*(1./2.+1./2.*(1-z2*u2/(1-z2))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
 
 	return (1./(2.*k))*(Hg*log(fc(z,phi,u,u2,x))+zCompOne*2.*t*log(fc(z1,phi,u,u2,x))+zCompTwo*2.*t*log(fc(z2,phi,u,u2,x)));
+
 }
 
 void fcorrelMC(double (*equation)(double, double, double, double), double x, unsigned long long N, double *I, double *stddev)	{

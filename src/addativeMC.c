@@ -5,7 +5,7 @@
 #include "emissionfunctions.h"
 #define ZETA_0 1
 
-double fc(double t, double phi_k, double k, double x)	{
+static double fc(double t, double phi_k, double k, double x)	{
 	double u2 = k/(1-k);
 	double u = pow(u2, 0.5);
 	double phi = phi_k*2.*M_PI; //TODO does this require the same scaling?
@@ -29,10 +29,10 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 	*I = 0;
 	
 	for (i=0; i < N; ++i)	{
-		zetaV = uniform(0,1);
-		phi_k = uniform(0,1);
-		k = uniform(0,1);
-		t = uniform(0,1);
+		while ((zetaV = uniform(0,1)) == 0 || zetaV == 1);
+		while ((phi_k = uniform(0,1)) == 0 || phi_k == 1);
+		while ((k = uniform(0,1)) == 0 || k == 1);
+		while ((t = uniform(0,1)) == 0 || t == 1);
 		zetaSum = iZeta(ZETA_0, epsi, R, 0);
 		Cab = caEquation(x,k,t,phi_k)*nfEquation(x,k,t,phi_k);
 		fcorrel = fc(t,phi_k,k,x);
@@ -48,7 +48,7 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 int main()	{
 	srand(time(0));
 	double I, stddev;
-	totalMC(1,1e-5,0.2,100,&I,&stddev);
+	totalMC(1,1e-5,0.2,100000,&I,&stddev);
 	printf("I: %f, sttdev: %f\n", I, stddev);
 	return 0;
 }
