@@ -13,4 +13,6 @@ double caEquation(double x, double k, double t, double phi_k);
 
 double iZeta(double zetaPrev, double epsi, double R, double zetaSum);
 
+double *arange(double a, double b, size_t x);
+
 #endif
