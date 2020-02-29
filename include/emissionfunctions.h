@@ -1,5 +1,7 @@
-#ifndef MONTECARLOS_H_
-#define MONTECARLOS_H_
+#ifndef EMISSIONFUNCTIONS_H_ 
+#define EMISSIONFUNCTIONS_H_
+
+#define ZETA_0 1
 
 double uniform(double a, double b);
 
@@ -13,6 +15,10 @@ double caEquation(double x, double k, double t, double phi_k);
 
 double iZeta(double zetaPrev, double epsi, double R, double zetaSum);
 
-double *arange(double a, double b, size_t x);
+double FcorrelMin(double fcorrel, double Cab, double zetaV, double zetaSum, double R);
+
+double FcorrelMaj(double fcorrel, double Cab, double zetaSum, double R);
+
+double fc(double t, double phi_k, double k, double x);
 
 #endif

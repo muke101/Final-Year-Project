@@ -14,7 +14,7 @@ DEPS= $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 LIBS =-lm
 
-OBJ = addativeMC.o nfcaMC.o multiGluonMC.o 
+OBJ = addativeMC.o nfcaMC.o multiGluonMC.o tests.o 
 
 CFLAGS =$(STANDARD) $(LTO) $(GRAPHITE) $(IPA) $(SECURITY) -I$(IDIR) 
 

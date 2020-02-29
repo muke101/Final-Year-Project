@@ -2,23 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <time.h>
-
-double *arange(double a, double b, size_t x)	{
-	double *arr = malloc(x*sizeof(double));	
-	double step = (b-a)/x;
-	size_t i;
-	
-	for (i=0; i <= x; i++)	{
-		arr[i] = a+step*i;
-	}
-
-	return arr;
-}
-
-static double uniform(double a, double b)  {
-   double range = b-a;
-   return a + (rand()*range)/RAND_MAX;
-}
+#include "emissionfunctions.h"
 
 double iZeta(double zetaPrev, double epsi, double R, double zetaSum)	{
 	double zeta = zetaPrev*pow(uniform(0,1),1./R);	
