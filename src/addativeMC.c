@@ -62,7 +62,9 @@ int main()	{
      * x R and e: O
      */
 
-	test(1, 1e-5, 0.2, N, 'x', step, nfMC, nfComp); 
+	totalMC(1, 1e-10, 0.3, 1000000, &I, &stddev);
+	printf("I: %f, stddev: %f\n", I, stddev);
+	//test(1, 1e-5, 0.2, N, 'x', step, nfMC, nfComp); 
 
 	return 0;
 }

@@ -1,6 +1,6 @@
 CC=gcc
 STANDARD=-O3 -pipe -march=native -fomit-frame-pointer -fdevirtualize-at-ltrans 
-WARNINGS=-Wall -Wextra
+WARNINGS=-Wall -Wextra -Wno-unused-variable -Wno-unused-result
 LTO=-flto=4
 GRAPHITE=-fgraphite-identity -floop-nest-optimize -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block
 IPA=-fipa-pta
@@ -16,7 +16,7 @@ LIBS =-lm
 
 OBJ = addativeMC.o nfcaMC.o multiGluonMC.o tests.o 
 
-CFLAGS =$(STANDARD) $(LTO) $(GRAPHITE) $(IPA) $(SECURITY) -I$(IDIR) 
+CFLAGS =$(STANDARD) $(LTO) $(GRAPHITE) $(IPA) $(SECURITY) -I$(IDIR) $(WARNINGS) 
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) 
