@@ -4,15 +4,9 @@
 #include <math.h>
 #include "emissionfunctions.h"
 #include "tests.h"
-#define ZETA_0 1
 
-double fc(double t, double phi_k, double k, double x)	{
-	double u2 = k/(1-k);
-	double u = pow(u2, 0.5);
-	double phi = phi_k*2.*M_PI; 
-	double z = t;
-	
-	return pow(1+u2,(x-1)/2)*z*pow(ua2(z,phi,u,u2),1-x/2.)+(1-z)*pow(ub2(z,phi,u,u2),-x/2.);
+double fc(double u, double u2, double phi, double z, double x)	{
+	return pow(1+u2,(x-1)/2)*(z*pow(ua2(z,phi,u,u2),1-x/2.)+(1-z)*pow(ub2(z,phi,u,u2),-x/2.));
 }
 
 double FcorrelMin(double fcorrel, double Cab, double zetaV, double zetaSum, double R)	{
@@ -23,10 +17,16 @@ double FcorrelMaj(double fcorrel, double Cab, double zetaSum, double R)	{
 	return Cab*(exp(-R*log(fcorrel+zetaSum))-exp(-R*log(1+zetaSum)));
 }
 
+double fcVsc(double u, double u2, double phi, double z, double x)	{
+	
+}
+
 void totalMC(double x, double epsi, double R, unsigned long long N, double *I, double *stddev)	{
 
 	unsigned long long i;
 	double phi_k, k, t, zetaV, fcorrel, zetaSum, Cab, r, I2=0;
+	double u,u2,phi,z,z1,z2;
+	double *transedVars;
 	*I = 0;
 	
 	for (i=0; i < N; ++i)	{
@@ -34,9 +34,16 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 		while ((phi_k = uniform(0,1)) == 0 || phi_k == 1);
 		while ((k = uniform(0,1)) == 0 || k == 1);
 		while ((t = uniform(0,1)) == 0 || t == 1);
+		transedVars = transform(t, phi_k, k);	
+		u = transedVars[0];
+		u2 = transedVars[1];
+		phi = transedVars[2];
+		z = transedVars[3];
+		z1 = transedVars[4];
+		z2 = transedVars[5];
 		zetaSum = iZeta(ZETA_0, epsi, R, 0);
-		Cab = caEquation(x,k,t,phi_k)+nfEquation(x,k,t,phi_k);
-		fcorrel = fc(t,phi_k,k,x);
+		Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc)+nfEquation(x,k,u,u2,phi,z,fcVsc);
+		fcorrel = fc(u,u2,phi,z,x);
 		r = FcorrelMin(fcorrel, Cab, zetaV, zetaSum, R) + FcorrelMaj(fcorrel, Cab, zetaSum, R); 
 		*I += r/N; 
 		I2 += pow(r,2)/N;
@@ -52,7 +59,7 @@ int main()	{
 	double I, stddev;
 	int i;
 	int step = 20;
-	double N = 10000;
+	double N = 100000;
 	
     /*
      * somewhat hacky solution to only being able to match on single characters:
@@ -62,9 +69,7 @@ int main()	{
      * x R and e: O
      */
 
-	totalMC(1, 1e-10, 0.3, 1000000, &I, &stddev);
-	printf("I: %f, stddev: %f\n", I, stddev);
-	//test(1, 1e-5, 0.2, N, 'x', step, nfMC, nfComp); 
+	test(1, 1e-5, 0.2, N, 'x', step, caMC, caComp); 
 
 	return 0;
 }
