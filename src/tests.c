@@ -129,7 +129,7 @@ void nfComp(double x, double epsi, double R, unsigned long long N, double *I)   
 
 
 void test(double defX, double defEpsi, double defR, unsigned long long N, const char flags, int step, void(*MCfunc)(double, double, double, unsigned long long, double*), void(*CompFunc)(double, double, double, unsigned long long, double*))	{
-	int i;
+	int i,j,k;
 	double I1, I2;
 	double *x, *epsi, *R;
 	srand(time(0));
@@ -145,7 +145,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				if (x[i] == 1)	{
 					printf("x=1: ");
 				}
-				printf("MC: %f, Comp: %f\n", I1, I2);
+				printf("x: %f, MC: %f, Comp: %f\n", x[i], I1, I2);
 			}
 			break;
 		case TEST_R:
@@ -155,7 +155,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 			for (i=0; i <= step; i++)	{
 				MCfunc(*x,*epsi,R[i],N,&I1);
 				CompFunc(*x,*epsi,R[i],N,&I2);
-				printf("MC: %f, Comp: %f\n", I1, I2);
+				printf("R: %f, MC: %f, Comp: %f\n", R[i], I1, I2);
 			}
 			break;
 		case TEST_EPSI:
@@ -165,7 +165,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
             for (i=0; i <= step; i++)	{
             	MCfunc(*x,epsi[i],*R,N,&I1);
             	CompFunc(*x,epsi[i],*R,N,&I2);
-            	printf("MC: %f, Comp: %f\n", I1, I2);
+            	printf("epsi: %f, MC: %f, Comp: %f\n", epsi[i], I1, I2);
             }
 			break;
 		case TEST_XR:
@@ -173,9 +173,11 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 			epsi = &defEpsi;	
 			R = arange(0.1,2,step);
 			for (i=0; i <= step; i++)	{
-				MCfunc(x[i],*epsi,R[i],N,&I1);
-				CompFunc(x[i],*epsi,R[i],N,&I2);
-				printf("MC: %f, Comp: %f\n", I1, I2);
+				for (j=0; j <= step; j++)	{
+					MCfunc(x[i],*epsi,R[j],N,&I1);
+					CompFunc(x[i],*epsi,R[j],N,&I2);
+					printf("x: %f, R: %f, MC: %f, Comp: %f\n",x[i],R[j],I1,I2);
+				}
 			}
 			break;
 		case TEST_XEPSI:
@@ -183,9 +185,11 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 			epsi = arange(1e-10,1e-3,step);
 			R = &defR; 
 			for (i=0; i <= step; i++)	{
-				MCfunc(x[i],epsi[i],*R,N,&I1);
-				CompFunc(x[i],epsi[i],*R,N,&I2);
-				printf("MC: %f, Comp: %f\n", I1, I2);
+				for (j=0; j <= step; j++)	{
+					MCfunc(x[i],epsi[j],*R,N,&I1);
+					CompFunc(x[i],epsi[j],*R,N,&I2);
+					printf("x: %f, epsi: %f, MC: %f, Comp: %f\n",x[i],epsi[j],I1,I2);
+				}
 			}
 			break;
 		case TEST_REPSI:
@@ -193,9 +197,11 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 			epsi = arange(1e-10,1e-3,step);
 			R = arange(0.1,2,step);
 			for (i=0; i <= step; i++)	{
-				MCfunc(*x,epsi[i],R[i],N,&I1);
-				CompFunc(*x,epsi[i],R[i],N,&I2);
-				printf("MC: %f, Comp: %f\n", I1, I2);
+				for (j=0; j <= step; j++)	{
+					MCfunc(*x,epsi[i],R[j],N,&I1);
+					CompFunc(*x,epsi[i],R[j],N,&I2);
+					printf("epsi: %f, R: %f, MC: %f, Comp: %f\n",epsi[i],R[j],I1,I2);
+				}
 			}
 			break;
 		case TEST_XREPSI:
@@ -203,9 +209,13 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 			epsi = arange(1e-10,1e-3,step);
 			R = arange(0.1,2,step);
 			for (i=0; i <= step; i++)	{
-				MCfunc(x[i],epsi[i],R[i],N,&I1);
-				CompFunc(x[i],epsi[i],R[i],N,&I2);
-				printf("MC: %f, Comp: %f\n", I1, I2);
+				for (j=0; j <= step; j++)	{
+					for (k=0; k <= step; k++)	{
+						MCfunc(x[i],epsi[j],R[k],N,&I1);
+						CompFunc(x[i],epsi[j],R[k],N,&I2);
+						printf("x: %f, epsi: %f, R: %f, MC: %f, Comp: %f\n",x[i],epsi[j],R[k],I1,I2);
+					}
+				}
 			}
 			break;
 	}

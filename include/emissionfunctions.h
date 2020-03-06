@@ -24,7 +24,7 @@ double fc(double u, double u2, double phi, double z, double x);
 
 double fcCorrection(double u, double u2, double phi, double z, double x);
 
-double fcVsc(double zetaV, double x, double R, double u, double u2, double phi, double z);
+double fcVsc(double zetaV, double zetaSum, double x, double R, double u, double u2, double phi, double z);
 
 double *transform(double t, double phi_k, double k);
 

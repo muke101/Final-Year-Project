@@ -59,9 +59,9 @@ int main()	{
 	double I, stddev;
 	int i;
 	int step = 20;
-	double N = 100000;
+	double N = 1000;
 	
-	test(1, 1e-5, 0.2, N, TEST_X, step, caMC, caComp); 
+	test(1, 1e-5, 0.2, N, TEST_XREPSI, step, caMC, caComp); 
 
 	return 0;
 }

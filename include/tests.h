@@ -1,6 +1,14 @@
 #ifndef TESTS_H_
 #define TESTS_H_
 
+#define TEST_X 0
+#define TEST_EPSI 1
+#define TEST_R 2
+#define TEST_XEPSI 3
+#define TEST_XR 4
+#define TEST_REPSI 5
+#define TEST_XREPSI 6
+
 double *arange(double a, double b, int x);
 
 void caMC(double x, double epsi, double R, unsigned long long N, double *I);
