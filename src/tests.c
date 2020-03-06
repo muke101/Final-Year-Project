@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "emissionfunctions.h"
+#include "tests.h"
 
 double *arange(double a, double b, int x)    {
     double *arr = malloc((size_t)x*sizeof(double));
@@ -37,7 +38,7 @@ void caMC(double x, double epsi, double R, unsigned long long N, double *I) {
 		z1 = transedVars[4];
 		z2 = transedVars[5];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,x,R,u,u2,phi,z),fcVsc(zetaV,x,R,u,u2,phi,z1),fcVsc(zetaV,x,R,u,u2,phi,z2));
+        Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2));
         fcorrel = fc(u,u2,phi,z,x);
         r = FcorrelMin(fcorrel, Cab, zetaV, zetaSum, R) + FcorrelMaj(fcorrel, Cab, zetaSum, R);
         *I += r/N;
@@ -65,7 +66,7 @@ void nfMC(double x, double epsi, double R, unsigned long long N, double *I) {
 		phi = transedVars[2];
 		z = transedVars[3];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        Cab = nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,x,R,u,u2,phi,z)); //TODO is this fcVsc or fcCorrection?
+        Cab = nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z)); //TODO is this fcVsc or fcCorrection?
         fcorrel = fc(u,u2,phi,z,x);
         r = FcorrelMin(fcorrel, Cab, zetaV, zetaSum, R) + FcorrelMaj(fcorrel, Cab, zetaSum, R);
         *I += r/N;
@@ -93,7 +94,7 @@ void caComp(double x, double epsi, double R, unsigned long long N, double *I)   
 		z1 = transedVars[4];
 		z2 = transedVars[5];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        ca = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,x,R,u,u2,phi,z),fcVsc(zetaV,x,R,u,u2,phi,z1),fcVsc(zetaV,x,R,u,u2,phi,z2));
+        ca = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2));
         r = -pow(1+zetaSum, R)*((1-x)*(11./12.*pow(M_PI,2)/6) + ca);
         *I+=r/N;
     }
@@ -119,7 +120,7 @@ void nfComp(double x, double epsi, double R, unsigned long long N, double *I)   
 		phi = transedVars[2];
 		z = transedVars[3];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        nf = nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,x,R,u,u2,phi,z));
+        nf = nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z));
         r = -zetaSum*((1-x)*(2./12.*pow(M_PI,2)/6) + nf);
         *I+=r/N;
     }
@@ -133,18 +134,8 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 	double *x, *epsi, *R;
 	srand(time(0));
 
-	/*
-	 * somewhat hacky solution to only being able to match on single characters:
-	 * to vary x and R at the same time: flag == T
-	 * to vary x and e: Y
-	 * R and e: U
-	 * x R and e: O
-	 */
-
-
-
 	switch (flags)	{
-		case 'x':
+		case TEST_X:
 			x = arange(0,2,step);
 			epsi = &defEpsi;
 			R = &defR;
@@ -157,7 +148,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				printf("MC: %f, Comp: %f\n", I1, I2);
 			}
 			break;
-		case 'R':
+		case TEST_R:
 			x = &defX;
 			epsi = &defEpsi;
 			R = arange(0.1,2,step);
@@ -167,7 +158,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				printf("MC: %f, Comp: %f\n", I1, I2);
 			}
 			break;
-		case 'e':
+		case TEST_EPSI:
 			x = &defX;
             epsi = arange(1e-10,1e-3,step);
             R = &defR;
@@ -177,7 +168,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
             	printf("MC: %f, Comp: %f\n", I1, I2);
             }
 			break;
-		case 'T':
+		case TEST_XR:
 			x = arange(0,2,step);
 			epsi = &defEpsi;	
 			R = arange(0.1,2,step);
@@ -187,7 +178,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				printf("MC: %f, Comp: %f\n", I1, I2);
 			}
 			break;
-		case 'Y':
+		case TEST_XEPSI:
 			x = arange(0,2,step);
 			epsi = arange(1e-10,1e-3,step);
 			R = &defR; 
@@ -197,7 +188,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				printf("MC: %f, Comp: %f\n", I1, I2);
 			}
 			break;
-		case 'U':
+		case TEST_REPSI:
 			x = &defX;
 			epsi = arange(1e-10,1e-3,step);
 			R = arange(0.1,2,step);
@@ -207,7 +198,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				printf("MC: %f, Comp: %f\n", I1, I2);
 			}
 			break;
-		case 'O':
+		case TEST_XREPSI:
 			x = arange(0,2,step);
 			epsi = arange(1e-10,1e-3,step);
 			R = arange(0.1,2,step);

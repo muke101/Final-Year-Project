@@ -17,8 +17,8 @@ double FcorrelMaj(double fcorrel, double Cab, double zetaSum, double R)	{
 	return Cab*(exp(-R*log(fcorrel+zetaSum))-exp(-R*log(1+zetaSum)));
 }
 
-double fcVsc(double zetaV, double x, double R, double u, double u2, double phi, double z)	{
-	return 1/zetaV*(exp(-R*log(zetaV*fc(u,u2,phi,z,x))) - exp(-R*log(zetaV)))+(exp(-R*log(fc(u,u2,phi,z,x)))+exp(-R*log(1))); 
+double fcVsc(double zetaV, double zetaSum, double x, double R, double u, double u2, double phi, double z)	{
+	return 1/zetaV*(exp(-R*log(zetaV*fc(u,u2,phi,z,x)+1+zetaSum))-exp(-R*log(zetaV+1+zetaSum)))+(exp(-R*log(fc(u,u2,phi,z,x)+zetaSum))-exp(-R*log(zetaV+1+zetaSum))); 
 }
 
 void totalMC(double x, double epsi, double R, unsigned long long N, double *I, double *stddev)	{
@@ -42,7 +42,7 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 		z1 = transedVars[4];
 		z2 = transedVars[5];
 		zetaSum = iZeta(ZETA_0, epsi, R, 0);
-		Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,x,R,u,u2,phi,z),fcVsc(zetaV,x,R,u,u2,phi,z1),fcVsc(zetaV,x,R,u,u2,phi,z2))+nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,x,R,u,u2,phi,z));
+		Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2))+nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z));
 		fcorrel = fc(u,u2,phi,z,x);
 		r = FcorrelMin(fcorrel, Cab, zetaV, zetaSum, R) + FcorrelMaj(fcorrel, Cab, zetaSum, R); 
 		*I += r/N; 
@@ -61,15 +61,7 @@ int main()	{
 	int step = 20;
 	double N = 100000;
 	
-    /*
-     * somewhat hacky solution to only being able to match on single characters:
-     * to vary x and R at the same time: flag == T
-     * to vary x and e: Y
-     * R and e: U
-     * x R and e: O
-     */
-
-	test(1, 1e-5, 0.2, N, 'x', step, caMC, caComp); 
+	test(1, 1e-5, 0.2, N, TEST_X, step, caMC, caComp); 
 
 	return 0;
 }
