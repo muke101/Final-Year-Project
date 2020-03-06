@@ -44,27 +44,27 @@ double fcCorrection(double z, double phi, double u, double u2, double x)	{
 	return log(fc_x(z,phi,u,u2,x));
 }
 
-double nfEquation(double x, double k, double u, double u2, double phi, double z, double (*fcorrelFunc)(double,double,double,double,double))	{
+double nfEquation(double x, double k, double u, double u2, double phi, double z, double correl)	{
 
 	double Hq = 1-((z*(1-z))/(1+u2))*pow(2.*cos(phi)+((1-2.*z)*u)/pow(z*(1-z),0.5),2);
 
-	return (1./(2.*k))*Hq*fcorrelFunc(z,phi,u,u2,x);
+	return (1./(2.*k))*Hq*correl;
 }
 
-double caEquation(double x, double k, double t, double u, double u2, double phi, double z, double z1, double z2,  double (*fcorrelFunc)(double,double,double,double,double))	{
+double caEquation(double x, double k, double t, double u, double u2, double phi, double z, double z1, double z2, double correl, double correlZ1, double correlZ2)	{ 
 
 	double Hg = -4+z*(1-z)/(1+u2)*pow(2.*cos(phi)+((1-2.*z)*u)/pow(z*(1-z),0.5),2);  
 	double zCompOne = (1./(1-z1))*(1./2.+1./2.*(1-(1-z1)*u2/z1)/ua2(z1,phi,u,u2)+(1-z1*u2/(1-z1))/ub2(z1,phi,u,u2));
 	double zCompTwo = (1./z2)*(1./2.+1./2.*(1-z2*u2/(1-z2))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
 
-	return (1./(2.*k))*(Hg*fcorrelFunc(z,phi,u,u2,x)+zCompOne*2.*t*fcorrelFunc(z1,phi,u,u2,x)+zCompTwo*2.*t*fcorrelFunc(z2,phi,u,u2,x));
+	return (1./(2.*k))*(Hg*correl+zCompOne*2.*t*correlZ1+zCompTwo*2.*t*correlZ2);
 }
 
 double equation(const char *flag, double x, double k, double phi_k, double t, double u, double u2, double phi, double z, double z1, double z2, double(*fcorrelFunc)(double,double,double,double,double))	{
 	if (strcmp(flag, "nf") == 0)
-		return nfEquation(x, k, u, u2, phi, z, fcorrelFunc);
+		return nfEquation(x, k, u, u2, phi, z, fcorrelFunc(z,phi,u,u2,x));
 	if (strcmp(flag, "ca") == 0)
-		return caEquation(x, k, t, u, u2, phi, z, z1, z2, fcorrelFunc);
+		return caEquation(x, k, t, u, u2, phi, z, z1, z2, fcorrelFunc(z,phi,u,u2,x),fcorrelFunc(z1,phi,u,u2,x),fcorrelFunc(z2,phi,u,u2,x));
 	else	{
 		printf("invalid flag\n");
 		return 0;

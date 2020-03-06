@@ -17,8 +17,8 @@ double FcorrelMaj(double fcorrel, double Cab, double zetaSum, double R)	{
 	return Cab*(exp(-R*log(fcorrel+zetaSum))-exp(-R*log(1+zetaSum)));
 }
 
-double fcVsc(double u, double u2, double phi, double z, double x)	{
-	
+double fcVsc(double zetaV, double x, double R, double u, double u2, double phi, double z)	{
+	return 1/zetaV*(exp(-R*log(zetaV*fc(u,u2,phi,z,x))) - exp(-R*log(zetaV)))+(exp(-R*log(fc(u,u2,phi,z,x)))+exp(-R*log(1))); 
 }
 
 void totalMC(double x, double epsi, double R, unsigned long long N, double *I, double *stddev)	{
@@ -42,7 +42,7 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 		z1 = transedVars[4];
 		z2 = transedVars[5];
 		zetaSum = iZeta(ZETA_0, epsi, R, 0);
-		Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc)+nfEquation(x,k,u,u2,phi,z,fcVsc);
+		Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,x,R,u,u2,phi,z),fcVsc(zetaV,x,R,u,u2,phi,z1),fcVsc(zetaV,x,R,u,u2,phi,z2))+nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,x,R,u,u2,phi,z));
 		fcorrel = fc(u,u2,phi,z,x);
 		r = FcorrelMin(fcorrel, Cab, zetaV, zetaSum, R) + FcorrelMaj(fcorrel, Cab, zetaSum, R); 
 		*I += r/N; 
