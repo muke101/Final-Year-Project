@@ -6,7 +6,7 @@
 #include "tests.h"
 
 double *arange(double a, double b, int x)    {
-    double *arr = malloc((size_t)x*sizeof(double));
+    double *arr = malloc((size_t)(x+1)*sizeof(double));
     double step = (b-a)/x;
     int i;
 
@@ -158,6 +158,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				}
 				printf("x: %f, MC: %f, Comp: %f\n", x[i], I1, I2);
 			}
+			free(x);
 			break;
 		case TEST_R:
 			x = &defX;
@@ -168,6 +169,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 				CompFunc(*x,*epsi,R[i],N,&I2);
 				printf("R: %f, MC: %f, Comp: %f\n", R[i], I1, I2);
 			}
+			free(R);
 			break;
 		case TEST_EPSI:
 			x = &defX;
@@ -178,6 +180,7 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
             	CompFunc(*x,epsi[i],*R,N,&I2);
             	printf("epsi: %f, MC: %f, Comp: %f\n", epsi[i], I1, I2);
             }
+			free(epsi);
 			break;
 		case TEST_XR:
 			x = arange(0,2,step);
@@ -190,6 +193,8 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 					printf("x: %f, R: %f, MC: %f, Comp: %f\n",x[i],R[j],I1,I2);
 				}
 			}
+			free(x);
+			free(R);
 			break;
 		case TEST_XEPSI:
 			x = arange(0,2,step);
@@ -202,6 +207,8 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 					printf("x: %f, epsi: %f, MC: %f, Comp: %f\n",x[i],epsi[j],I1,I2);
 				}
 			}
+			free(x);
+			free(epsi);
 			break;
 		case TEST_REPSI:
 			x = &defX;
@@ -214,6 +221,8 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 					printf("epsi: %f, R: %f, MC: %f, Comp: %f\n",epsi[i],R[j],I1,I2);
 				}
 			}
+			free(epsi);
+			free(R);
 			break;
 		case TEST_XREPSI:
 			x = arange(0,2,step);
@@ -228,6 +237,9 @@ void test(double defX, double defEpsi, double defR, unsigned long long N, const 
 					}
 				}
 			}
+			free(x);
+			free(epsi);
+			free(R);
 			break;
 	}
 
