@@ -16,11 +16,7 @@ double caEquation(double x, double k, double t, double u, double u2, double phi,
 
 double iZeta(double zetaPrev, double epsi, double R, double zetaSum);
 
-double FcorrelMin(double fcorrel, double Cab, double zetaV, double zetaSum, double R);
-
-double FcorrelMaj(double fcorrel, double Cab, double zetaSum, double R);
-
-double fc(double u, double u2, double phi, double z, double x);
+double fc_x(double z, double u, double u2, double phi, double x);
 
 double fcCorrection(double u, double u2, double phi, double z, double x);
 
