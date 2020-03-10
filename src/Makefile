@@ -1,6 +1,6 @@
 CC=gcc
 STANDARD=-O3 -pipe -march=native -fomit-frame-pointer -fdevirtualize-at-ltrans 
-WARNINGS=-Wall -Wextra -Wno-unused-variable -Wno-unused-result
+WARNINGS=-Wall -Wextra -Wno-unused-variable -Wno-unused-result -Wno-misleading-indentation
 LTO=-flto=4
 GRAPHITE=-fgraphite-identity -floop-nest-optimize -floop-interchange -ftree-loop-distribution -floop-strip-mine -floop-block
 IPA=-fipa-pta

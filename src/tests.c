@@ -20,7 +20,7 @@ double *arange(double a, double b, int x)    {
 void caMC(double x, double epsi, double R, unsigned long long N, double *I) {
 
     unsigned long long i;
-    double phi_k, k, t, zetaV, fcorrel, zetaSum, Cab, r;
+    double phi_k, k, t, zetaV, fcorrel, zetaSum, fc, fcZ1, fcZ2, Cab, r;
 	double u, u2, phi, z, z1, z2;
 	double *transedVars;
     *I = 0;
@@ -38,10 +38,11 @@ void caMC(double x, double epsi, double R, unsigned long long N, double *I) {
 		z1 = transedVars[4];
 		z2 = transedVars[5];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2));
-        fcorrel = fc(u,u2,phi,z,x);
-        r = FcorrelMin(fcorrel, Cab, zetaV, zetaSum, R) + FcorrelMaj(fcorrel, Cab, zetaSum, R);
-        *I += r/N;
+		fc = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z);
+		fcZ1 = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1);
+		fcZ2 = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2);
+        Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fc,fcZ1,fcZ2);
+        *I += Cab/N;
     }
 
 }
@@ -51,7 +52,7 @@ void nfMC(double x, double epsi, double R, unsigned long long N, double *I) {
 
 	*I=0;
     unsigned long long i;
-    double phi_k, k, t, zetaV, fcorrel, zetaSum, Cab, r, I2=0;
+    double phi_k, k, t, zetaV, fcorrel, zetaSum, fc, Cab, r, I2=0;
 	double u,u2,phi,z;
 	double *transedVars;
 
@@ -66,10 +67,9 @@ void nfMC(double x, double epsi, double R, unsigned long long N, double *I) {
 		phi = transedVars[2];
 		z = transedVars[3];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        Cab = nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z)); //TODO is this fcVsc or fcCorrection?
-        fcorrel = fc(u,u2,phi,z,x);
-        r = FcorrelMin(fcorrel, Cab, zetaV, zetaSum, R) + FcorrelMaj(fcorrel, Cab, zetaSum, R);
-        *I += r/N;
+		fc = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z);
+        Cab = nfEquation(x,k,u,u2,phi,z,fc); 
+        *I += Cab/N;
     }
 
 }
@@ -77,7 +77,7 @@ void nfMC(double x, double epsi, double R, unsigned long long N, double *I) {
 void caComp(double x, double epsi, double R, unsigned long long N, double *I)   {
     *I = 0;
     unsigned long long i;
-    double phi_k, k, t, zetaSum, zetaV, r, ca;
+    double phi_k, k, t, zetaSum, zetaV, fc, fcZ1, fcZ2, r, ca;
 	double u,u2,phi,z,z1,z2;
 	double *transedVars;
 
@@ -94,18 +94,20 @@ void caComp(double x, double epsi, double R, unsigned long long N, double *I)   
 		z1 = transedVars[4];
 		z2 = transedVars[5];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        ca = caEquation(x,k,t,u,u2,phi,z,z1,z2,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1),fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2));
-        r = -pow(1+zetaSum, R)*((1-x)*(11./12.*pow(M_PI,2)/6) + ca);
+		fc = fcCorrection(z,phi,u,u2,x);
+		fcZ1 = fcCorrection(z1,phi,u,u2,x);
+		fcZ2 = fcCorrection(z2,phi,u,u2,x);
+        ca = caEquation(x,k,t,u,u2,phi,z,z1,z2,fc,fcZ1,fcZ2);
+        r = -pow(1+zetaSum, -R)*((1-x)*(11./12.*pow(M_PI,2)/6) + ca);
         *I+=r/N;
     }
-
 }
 
 
 void nfComp(double x, double epsi, double R, unsigned long long N, double *I)   {
     *I = 0;
     unsigned long long i;
-    double phi_k, k, t, zetaSum, zetaV, r, nf;
+    double phi_k, k, t, zetaSum, zetaV, fc, r, nf;
 	double u,u2,phi,z;
 	double *transedVars;
 
@@ -120,8 +122,9 @@ void nfComp(double x, double epsi, double R, unsigned long long N, double *I)   
 		phi = transedVars[2];
 		z = transedVars[3];
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
-        nf = nfEquation(x,k,u,u2,phi,z,fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z));
-        r = -zetaSum*((1-x)*(2./12.*pow(M_PI,2)/6) + nf);
+		fc = fcCorrection(z,phi,u,u2,x);
+        nf = nfEquation(x,k,u,u2,phi,z,fc);
+        r = -pow(1+zetaSum,-R)*((1-x)*(-2./12.*pow(M_PI,2)/6) + nf);
         *I+=r/N;
     }
 
