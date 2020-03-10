@@ -53,7 +53,6 @@ double nfEquation(double x, double k, double u, double u2, double phi, double z,
 
 double caEquation(double x, double k, double t, double u, double u2, double phi, double z, double z1, double z2, double correl, double correlZ1, double correlZ2)	{ 
 
-	//printf("correl: %f, correlZ1: %f, correlZ2: %f\n",correl,correlZ1,correlZ2);
 	double Hg = -4+z*(1-z)/(1+u2)*pow(2.*cos(phi)+((1-2.*z)*u)/pow(z*(1-z),0.5),2);  
 	double zCompOne = (1./(1-z1))*(1./2.+1./2.*(1-(1-z1)*u2/z1)/ua2(z1,phi,u,u2)+(1-z1*u2/(1-z1))/ub2(z1,phi,u,u2));
 	double zCompTwo = (1./z2)*(1./2.+1./2.*(1-z2*u2/(1-z2))/ub2(z2,phi,u,u2)+(1-(1-z2)*u2/z2)/ua2(z2,phi,u,u2));
@@ -108,6 +107,7 @@ void fcorrelMC(const char *flag, double x, unsigned long long N, double *I, doub
 		}
 		*I+=r/N;
 		I2+=pow(r,2)/N;
+		free(transedVars);
 	}
 
 	double mu = *I/N;

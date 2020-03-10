@@ -43,7 +43,9 @@ void caMC(double x, double epsi, double R, unsigned long long N, double *I) {
 		fcZ2 = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2);
         Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fc,fcZ1,fcZ2);
         *I += Cab/N;
+		free(transedVars);
     }
+
 
 }
 
@@ -70,7 +72,9 @@ void nfMC(double x, double epsi, double R, unsigned long long N, double *I) {
 		fc = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z);
         Cab = nfEquation(x,k,u,u2,phi,z,fc); 
         *I += Cab/N;
+		free(transedVars);
     }
+
 
 }
 
@@ -100,7 +104,9 @@ void caComp(double x, double epsi, double R, unsigned long long N, double *I)   
         ca = caEquation(x,k,t,u,u2,phi,z,z1,z2,fc,fcZ1,fcZ2);
         r = -pow(1+zetaSum, -R)*((1-x)*(11./12.*pow(M_PI,2)/6) + ca);
         *I+=r/N;
+		free(transedVars);
     }
+
 }
 
 
@@ -126,7 +132,9 @@ void nfComp(double x, double epsi, double R, unsigned long long N, double *I)   
         nf = nfEquation(x,k,u,u2,phi,z,fc);
         r = -pow(1+zetaSum,-R)*((1-x)*(-2./12.*pow(M_PI,2)/6) + nf);
         *I+=r/N;
+		free(transedVars);
     }
+
 
 }
 

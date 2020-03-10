@@ -6,7 +6,7 @@
 #include "tests.h"
 
 double fc(double u, double u2, double phi, double z, double x)	{
-	return pow(1+u2,(x-1)/2)*(z*pow(ua2(z,phi,u,u2),1-x/2.)+(1-z)*pow(ub2(z,phi,u,u2),-x/2.));
+	return pow(1+u2,(x-1)/2)*fc_x(z, phi, u, u2, x);
 }
 
 double FcorrelMin(double fcorrel, double zetaV, double zetaSum, double R)	{
@@ -49,6 +49,7 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 		r = Cab;
 		*I += r/N; 
 		I2 += pow(r,2)/N;
+		free(transedVars);
 	}
 
 	*stddev = pow((1./N)*(I2-pow(*I,2)),0.5);
@@ -62,8 +63,8 @@ int main()	{
 	int i;
 	int step = 20;
 	double N = 10000;
-	
-	test(1, 1e-10, 0.2, N, TEST_X, step, nfMC, nfComp); 
+
+	test(1, 1e-10, 0.2, N, TEST_XREPSI, step, caMC, caComp); 
 
 	return 0;
 }
