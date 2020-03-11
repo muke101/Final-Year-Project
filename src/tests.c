@@ -22,28 +22,27 @@ void caMC(double x, double epsi, double R, unsigned long long N, double *I) {
     unsigned long long i;
     double phi_k, k, t, zetaV, fcorrel, zetaSum, fc, fcZ1, fcZ2, Cab, r;
 	double u, u2, phi, z, z1, z2;
-	double *transedVars;
+	struct vars transedVars;
     *I = 0;
 
     for (i=0; i < N; ++i)   {
-        while ((zetaV = uniform(0,1)) == 0 || zetaV == 1);
-        while ((phi_k = uniform(0,1)) == 0 || phi_k == 1);
-        while ((k = uniform(0,1)) == 0 || k == 1);
-        while ((t = uniform(0,1)) == 0 || t == 1);
+        zetaV = uniform(epsi,1-epsi);
+        phi_k = uniform(epsi,1-epsi);
+        k = uniform(epsi,1-epsi);
+        t = uniform(epsi,1-epsi);
 		transedVars = transform(t, phi_k, k);
-		u = transedVars[0];
-		u2 = transedVars[1];
-		phi = transedVars[2];
-		z = transedVars[3];
-		z1 = transedVars[4];
-		z2 = transedVars[5];
+		u = transedVars.u;
+		u2 = transedVars.u2;
+		phi = transedVars.phi;
+		z = transedVars.z;
+		z1 = transedVars.z1;
+		z2 = transedVars.z2;
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
 		fc = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z);
 		fcZ1 = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1);
 		fcZ2 = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z2);
         Cab = caEquation(x,k,t,u,u2,phi,z,z1,z2,fc,fcZ1,fcZ2);
         *I += Cab/N;
-		free(transedVars);
     }
 
 
@@ -56,23 +55,22 @@ void nfMC(double x, double epsi, double R, unsigned long long N, double *I) {
     unsigned long long i;
     double phi_k, k, t, zetaV, fcorrel, zetaSum, fc, Cab, r, I2=0;
 	double u,u2,phi,z;
-	double *transedVars;
+	struct vars transedVars;
 
     for (i=0; i < N; ++i)   {
-        while ((zetaV = uniform(0,1)) == 0 || zetaV == 1);
-        while ((phi_k = uniform(0,1)) == 0 || phi_k == 1);
-        while ((k = uniform(0,1)) == 0 || k == 1);
-        while ((t = uniform(0,1)) == 0 || t == 1);
+        zetaV = uniform(epsi,1-epsi);
+        phi_k = uniform(epsi,1-epsi);
+        k = uniform(epsi,1-epsi);
+        t = uniform(epsi,1-epsi);
 		transedVars = transform(t, phi_k, k);
-		u = transedVars[0];
-		u2 = transedVars[1];
-		phi = transedVars[2];
-		z = transedVars[3];
+		u = transedVars.u;
+		u2 = transedVars.u2;
+		phi = transedVars.phi;
+		z = transedVars.z;
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
 		fc = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z);
         Cab = nfEquation(x,k,u,u2,phi,z,fc); 
         *I += Cab/N;
-		free(transedVars);
     }
 
 
@@ -83,20 +81,19 @@ void caComp(double x, double epsi, double R, unsigned long long N, double *I)   
     unsigned long long i;
     double phi_k, k, t, zetaSum, zetaV, fc, fcZ1, fcZ2, r, ca;
 	double u,u2,phi,z,z1,z2;
-	double *transedVars;
+	struct vars transedVars;
 
     for (i=0; i < N; ++i)   {
-		while ((zetaV = uniform(0,1)) == 0);
-        while ((phi_k = uniform(0,1)) == 0 || phi_k == 1);
-        while ((k = uniform(0,1)) == 0 || k == 1);
-        while ((t = uniform(0,1)) == 0 || t == 1);
+		phi_k = uniform(epsi,1-epsi);
+		k = uniform(epsi,1-epsi);
+		t = uniform(epsi,1-epsi);
 		transedVars = transform(t, phi_k, k);
-		u = transedVars[0];
-		u2 = transedVars[1];
-		phi = transedVars[2];
-		z = transedVars[3];
-		z1 = transedVars[4];
-		z2 = transedVars[5];
+		u = transedVars.u;
+		u2 = transedVars.u2;
+		phi = transedVars.phi;
+		z = transedVars.z;
+		z1 = transedVars.z1;
+		z2 = transedVars.z2;
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
 		fc = fcCorrection(z,phi,u,u2,x);
 		fcZ1 = fcCorrection(z1,phi,u,u2,x);
@@ -104,7 +101,6 @@ void caComp(double x, double epsi, double R, unsigned long long N, double *I)   
         ca = caEquation(x,k,t,u,u2,phi,z,z1,z2,fc,fcZ1,fcZ2);
         r = -pow(1+zetaSum, -R)*((1-x)*(11./12.*pow(M_PI,2)/6) + ca);
         *I+=r/N;
-		free(transedVars);
     }
 
 }
@@ -115,24 +111,22 @@ void nfComp(double x, double epsi, double R, unsigned long long N, double *I)   
     unsigned long long i;
     double phi_k, k, t, zetaSum, zetaV, fc, r, nf;
 	double u,u2,phi,z;
-	double *transedVars;
+	struct vars transedVars;
 
     for (i=0; i < N; ++i)   {
-		while ((zetaV = uniform(0,1)) == 0);
-        while ((phi_k = uniform(0,1)) == 0 || phi_k == 1);
-        while ((k = uniform(0,1)) == 0 || k == 1);
-        while ((t = uniform(0,1)) == 0 || t == 1);
+		phi_k = uniform(epsi,1-epsi);
+		k = uniform(epsi,1-epsi);
+		t = uniform(epsi,1-epsi);
 		transedVars = transform(t, phi_k, k);
-		u = transedVars[0];
-		u2 = transedVars[1];
-		phi = transedVars[2];
-		z = transedVars[3];
+		u = transedVars.u;
+		u2 = transedVars.u2;
+		phi = transedVars.phi;
+		z = transedVars.z;
         zetaSum = iZeta(ZETA_0, epsi, R, 0);
 		fc = fcCorrection(z,phi,u,u2,x);
         nf = nfEquation(x,k,u,u2,phi,z,fc);
         r = -pow(1+zetaSum,-R)*((1-x)*(-2./12.*pow(M_PI,2)/6) + nf);
         *I+=r/N;
-		free(transedVars);
     }
 
 

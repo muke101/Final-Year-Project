@@ -7,17 +7,17 @@ IPA=-fipa-pta
 SECURITY=-no-pie -fno-stack-protector -fno-stack-clash-protection
 PGO=-fprofile-use=profile/
 PGO-GEN=-fprofile-generate=profile/
-TESTING="-fsanitize=address,undefined"
+TEST=-fsanitize=address,undefined
 
 IDIR=../include
-_DEPS = emmisionfunctions.h
+_DEPS = emmisionfunctions.h test.h
 DEPS= $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 LIBS =-lm
 
 OBJ = addativeMC.o nfcaMC.o multiGluonMC.o tests.o 
 
-CFLAGS =$(STANDARD) $(LTO) $(GRAPHITE) $(IPA) $(SECURITY) -I$(IDIR) $(WARNINGS) $(TESTING) 
+CFLAGS =$(STANDARD) $(LTO) $(GRAPHITE) $(IPA) $(SECURITY) -I$(IDIR) $(WARNINGS) 
 
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS) 

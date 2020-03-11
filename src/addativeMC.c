@@ -26,7 +26,7 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 	unsigned long long i;
 	double phi_k, k, t, zetaV, fcorrel, zetaSum, Cab, fc, fcZ1, fcZ2, r, I2=0;
 	double u,u2,phi,z,z1,z2;
-	double *transedVars;
+	struct vars transedVars;
 	*I = 0;
 	
 	for (i=0; i < N; ++i)	{
@@ -35,12 +35,12 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 		while ((k = uniform(0,1)) == 0 || k == 1);
 		while ((t = uniform(0,1)) == 0 || t == 1);
 		transedVars = transform(t, phi_k, k);	
-		u = transedVars[0];
-		u2 = transedVars[1];
-		phi = transedVars[2];
-		z = transedVars[3];
-		z1 = transedVars[4];
-		z2 = transedVars[5];
+		u = transedVars.u;
+		u2 = transedVars.u2;
+		phi = transedVars.phi;
+		z = transedVars.z;
+		z1 = transedVars.z1;
+		z2 = transedVars.z2;
 		zetaSum = iZeta(ZETA_0, epsi, R, 0);
 		fc = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z);
 		fcZ1 = fcVsc(zetaV,zetaSum,x,R,u,u2,phi,z1);
@@ -49,7 +49,6 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 		r = Cab;
 		*I += r/N; 
 		I2 += pow(r,2)/N;
-		free(transedVars);
 	}
 
 	*stddev = pow((1./N)*(I2-pow(*I,2)),0.5);
@@ -62,9 +61,9 @@ int main()	{
 	double I, stddev;
 	int i;
 	int step = 20;
-	double N = 10000;
+	double N = 10000000;
 
-	test(1, 1e-10, 0.2, N, TEST_X, step, nfMC, nfComp); 
+	test(1, 1e-10, 0.2, N, TEST_X, step, caMC, caComp); 
 
 	return 0;
 }
