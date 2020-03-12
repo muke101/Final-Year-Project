@@ -4,6 +4,15 @@
 #define ZETA_0 1
 #define VARS 6
 
+struct vars	{
+	double u;
+	double u2;
+	double phi;
+	double z;
+	double z1;
+	double z2;
+};
+
 double uniform(double a, double b);
 
 double ua2(double z, double phi, double u, double u2);
@@ -22,6 +31,6 @@ double fcCorrection(double u, double u2, double phi, double z, double x);
 
 double fcVsc(double zetaV, double zetaSum, double x, double R, double u, double u2, double phi, double z);
 
-double *transform(double t, double phi_k, double k);
+struct vars transform(double t, double phi_k, double k);
 
 #endif
