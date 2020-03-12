@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <math.h>
-#include <stdlib.h>
-#include <time.h>
 #include "emissionfunctions.h"
 
 double iZeta(double zetaPrev, double epsi, double R, double zetaSum)	{
@@ -29,17 +25,3 @@ void multiGluonMC(double epsi, double R, unsigned long long N, double *I, double
 
 	*stddev = pow((1./N)*(I2-pow(*I,2)), 0.5);
 }
-
-//int main(int argc, char **argv)	{
-//	int i;
-//	size_t x = 20;
-//	unsigned long long N = 1000000;
-//	double epsi = 1e-5;
-//	double *R = arange(0.1,2,x);
-//	
-//	for(i=0; i <= x; i++)	{
-//		printf("R: %f, I: %f, std: %f\n",R[i],multiGluonMC(epsi, R[i], N),stddev);	
-//	}
-//
-//	return 0;
-//}

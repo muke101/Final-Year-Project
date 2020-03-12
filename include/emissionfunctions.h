@@ -1,6 +1,11 @@
 #ifndef EMISSIONFUNCTIONS_H_ 
 #define EMISSIONFUNCTIONS_H_
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+
 #define ZETA_0 1
 #define VARS 6
 
