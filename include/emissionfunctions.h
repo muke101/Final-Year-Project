@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 #include <math.h>
 
@@ -16,6 +17,11 @@ struct vars	{
 	double z;
 	double z1;
 	double z2;
+};
+
+struct zetaI	{
+	double zeta;
+	double phi;
 };
 
 double uniform(double a, double b);

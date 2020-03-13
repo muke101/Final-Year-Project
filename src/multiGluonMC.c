@@ -2,8 +2,8 @@
 
 double iZeta(double zetaPrev, double epsi, double R, double zetaSum)	{
 	double zeta = zetaPrev*pow(uniform(0,1),1./R);	
-	if (zeta > epsi)	{ //TODO: this was n > epsi for some reason? double check this is ok
-		return iZeta(zeta, epsi, R, zetaSum+zeta);	
+	if (zeta > epsi)	{ 
+		return iZeta(zeta, epsi, R, zetaSum+zeta);
 	}
 	else	{
 		return zetaSum;
@@ -12,9 +12,8 @@ double iZeta(double zetaPrev, double epsi, double R, double zetaSum)	{
 
 void multiGluonMC(double epsi, double R, unsigned long long N, double *I, double *stddev)	{
 	*I = 0;
-	double currentProductSum, r, I2 = 0;
+	double r, I2 = 0;
 	unsigned long long i;
-	unsigned n;
 	srand(time(0)); //seed RNG
 
 	for (i=0; i < N; ++i)	{

@@ -49,17 +49,3 @@ void totalMC(double x, double epsi, double R, unsigned long long N, double *I, d
 
 	*stddev = pow((1./N)*(I2-pow(*I,2)),0.5);
 }
-
-
-
-int main()	{
-	srand(time(0));
-	double I, stddev;
-	int i;
-	int step = 20;
-	double N = 100000;
-
-	test(1, 1e-10, 0.2, N, TEST_X, step, nfMC, nfComp); 
-
-	return 0;
-}

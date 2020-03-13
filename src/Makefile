@@ -10,12 +10,12 @@ PGO-GEN=-fprofile-generate=profile/
 TEST=-fsanitize=address,undefined
 
 IDIR=../include
-_DEPS = emmisionfunctions.h test.h
+_DEPS = emmisionfunctions.h tests.h 
 DEPS= $(patsubst %,$(IDIR)/%,$(_DEPS))
 
 LIBS =-lm
 
-OBJ = addativeMC.o nfcaMC.o multiGluonMC.o tests.o 
+OBJ = addativeMC.o nfcaMC.o multiGluonMC.o tests.o generalMC.o 
 
 CFLAGS =$(STANDARD) $(LTO) $(GRAPHITE) $(IPA) $(SECURITY) -I$(IDIR) $(WARNINGS) 
 
