@@ -31,11 +31,6 @@ double modIZeta(struct zetaI *leg)	{
 		zeta = leg[i].zeta;
 		phi = leg[i].phi;
 		sinSum+=zeta*sin(phi);
-	}
-
-	for (i=0; leg[i].zeta; i++)	{
-		zeta = leg[i].zeta;
-		phi = leg[i].phi;
 		cosSum+=zeta*cos(phi);
 	}
 
