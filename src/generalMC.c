@@ -5,15 +5,15 @@ double generalZetaI(double *zetaPrev, double epsi, double R, double zetaSum, str
 	double r;
 	*zetaPrev = *zetaPrev*pow(uniform(0,1),1./R);
 	if (*zetaPrev > epsi)	{
-		while ((r=uniform(0,1)) == 0.5);
+		r = uniform(0,1);
 		if (r < 0.5)	{
 			leg1->zeta = *zetaPrev;
-			leg1->phi = uniform(0,1);
+			leg1->phi = uniform(0,1)*2.*M_PI;
 			return generalZetaI(zetaPrev, epsi, R, zetaSum+(*zetaPrev), ++leg1, leg2);
 		}
 		else	{
 			leg2->zeta = *zetaPrev;
-			leg2->phi = uniform(0,1);
+			leg2->phi = uniform(0,1)*2.*M_PI;
 			return generalZetaI(zetaPrev, epsi, R, zetaSum+(*zetaPrev), leg1, ++leg2);
 		}
 	}
@@ -24,16 +24,22 @@ double generalZetaI(double *zetaPrev, double epsi, double R, double zetaSum, str
 
 double modIZeta(struct zetaI *leg)	{
 	double zeta, phi;
-	double sum = 0;
+	double sinSum = 0, cosSum = 0;
 	int i;
 
 	for (i=0; leg[i].zeta; i++)	{
 		zeta = leg[i].zeta;
 		phi = leg[i].phi;
-		sum+=pow(pow(zeta*sin(phi),2)+pow(zeta*cos(phi),2),0.5);
+		sinSum+=zeta*sin(phi);
 	}
 
-	return sum;
+	for (i=0; leg[i].zeta; i++)	{
+		zeta = leg[i].zeta;
+		phi = leg[i].phi;
+		cosSum+=zeta*cos(phi);
+	}
+
+	return pow(pow(sinSum,2) + pow(cosSum,2),0.5);
 }
 
 void generalMC(double epsi, double R, unsigned long long N, double *I, double *stddev)	{
@@ -66,7 +72,7 @@ void generalMC(double epsi, double R, unsigned long long N, double *I, double *s
 
 int main()	{
 	double I, stddev;
-	generalMC(10e-10, 0.1, 100000, &I, &stddev);
+	generalMC(10e-10, 1, 100000, &I, &stddev);
 	printf("I: %.16f, stddev: %.16f\n",I,stddev);
 	return 0;
 }
